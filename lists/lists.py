@@ -30,16 +30,16 @@ class ListExercise:
         :return: Номер элемента
         """
 
-        left_index = 0
-        right_index = len(input_list) - 1
+        def search_recursively(left_index, right_index):
+            if left_index > right_index:
+                return -1
 
-        while left_index <= right_index:
             mid_index = (left_index + right_index) // 2
-
             if input_list[mid_index] < query:
-                left_index = mid_index + 1
+                return search_recursively(mid_index + 1, right_index)
             elif input_list[mid_index] > query:
-                right_index = mid_index - 1
+                return search_recursively(left_index, mid_index - 1)
             else:
                 return mid_index
-        return -1
+
+        return search_recursively(0, len(input_list) - 1)
