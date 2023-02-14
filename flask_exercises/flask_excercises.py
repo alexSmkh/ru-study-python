@@ -55,3 +55,26 @@ class FlaskExercise:
                 )
 
             return {'data': f'My name is {name}'}, HTTPStatus.OK
+
+        @app.patch('/user/<name>')
+        def update_user_name(name):
+            user = FlaskExercise.STORE.get(name)
+
+            if user is None:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            new_name = request.json.get('name')
+
+            if new_name is None:
+                return (
+                    {'errors': {'new_name': 'This field is required'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            FlaskExercise.STORE[new_name] = user
+            del FlaskExercise.STORE[name]
+
+            return {'data': f'My name is {new_name}'}, HTTPStatus.OK
