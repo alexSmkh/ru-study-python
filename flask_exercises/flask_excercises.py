@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+from http import HTTPStatus
 
 
 class FlaskExercise:
@@ -26,6 +27,19 @@ class FlaskExercise:
     В ответ должен вернуться статус 204
     """
 
+    STORE = {}
+
     @staticmethod
     def configure_routes(app: Flask) -> None:
-        pass
+        @app.post('/user')
+        def create_user():
+            name = request.json.get('name')
+
+            if name is None:
+                return (
+                    {'errors': {'name': 'This field is required'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            FlaskExercise.STORE[name] = {}
+            return {'data': f'User {name} is created!'}, HTTPStatus.CREATED
