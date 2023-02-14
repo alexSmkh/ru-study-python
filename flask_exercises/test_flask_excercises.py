@@ -70,7 +70,6 @@ class TestFlaskExercise:
         response = self.update_user("Heisenberg", {"name": "Jesse"})
         assert response == {"data": "My name is Jesse"}
 
-    @pytest.mark.skip
     def test_delete(self) -> None:
         self.create_user({"name": "Heisenberg"})
         self.delete_user("Heisenberg")
@@ -78,7 +77,6 @@ class TestFlaskExercise:
         response = self.flask_client.get("/user/Heisenberg")
         assert response.status_code == HTTPStatus.NOT_FOUND
 
-    @pytest.mark.skip
     def test_not_found(self) -> None:
         response = self.flask_client.get("/404")
         assert response.status_code == HTTPStatus.NOT_FOUND

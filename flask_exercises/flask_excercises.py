@@ -51,7 +51,7 @@ class FlaskExercise:
             if user is None:
                 return (
                     {'errors': {'name': 'User with this name does not exist'}},
-                    HTTPStatus.NO_CONTENT,
+                    HTTPStatus.NOT_FOUND,
                 )
 
             return {'data': f'My name is {name}'}, HTTPStatus.OK
@@ -78,3 +78,15 @@ class FlaskExercise:
             del FlaskExercise.STORE[name]
 
             return {'data': f'My name is {new_name}'}, HTTPStatus.OK
+
+        @app.delete('/user/<name>')
+        def delete_user(name):
+            if name not in FlaskExercise.STORE:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            del FlaskExercise.STORE[name]
+
+            return '', HTTPStatus.NO_CONTENT
