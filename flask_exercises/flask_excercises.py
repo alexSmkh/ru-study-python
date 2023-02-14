@@ -43,3 +43,15 @@ class FlaskExercise:
 
             FlaskExercise.STORE[name] = {}
             return {'data': f'User {name} is created!'}, HTTPStatus.CREATED
+
+        @app.get('/user/<name>')
+        def get_user(name):
+            user = FlaskExercise.STORE.get(name)
+
+            if user is None:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.NO_CONTENT,
+                )
+
+            return {'data': f'My name is {name}'}, HTTPStatus.OK
