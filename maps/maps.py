@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import Union
 
 
@@ -13,7 +14,19 @@ class MapExercise:
         Ключи словаря: name, rating_kinopoisk, rating_imdb, genres, year, access_level, country
         :return: Средний рейтинг фильмов у которых две или больше стран
         """
-        pass
+
+        filtered_movies = filter(
+            lambda movie: (
+                movie['country'].count(',') >= 1
+                and movie['rating_kinopoisk']
+                and float(movie['rating_kinopoisk']) > 0
+            ),
+            list_of_movies,
+        )
+
+        ratings = list(map(lambda movie: float(movie['rating_kinopoisk']), filtered_movies))
+
+        return reduce(lambda acc, rating: acc + rating, ratings) / len(ratings)
 
     @staticmethod
     def chars_count(list_of_movies: list[dict], rating: Union[float, int]) -> int:
@@ -28,4 +41,16 @@ class MapExercise:
         :return: Количество букв 'и' в названиях всех фильмов с рейтингом больше
         или равным заданному значению
         """
-        pass
+        filtered_movies = filter(
+            lambda movie: (
+                movie['rating_kinopoisk'] and float(movie['rating_kinopoisk']) >= rating
+            ),
+            list_of_movies,
+        )
+
+        number_of_chars_by_name = map(
+            lambda movie: (movie['name']).count('и'),
+            filtered_movies,
+        )
+
+        return reduce(lambda acc, count: acc + count, number_of_chars_by_name, 0)
