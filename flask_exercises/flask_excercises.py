@@ -63,7 +63,7 @@ class FlaskExercise:
             if user is None:
                 return (
                     {'errors': {'name': 'User with this name does not exist'}},
-                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                    HTTPStatus.NOT_FOUND,
                 )
 
             new_name = request.json.get('name')
@@ -84,7 +84,7 @@ class FlaskExercise:
             if name not in FlaskExercise.STORE:
                 return (
                     {'errors': {'name': 'User with this name does not exist'}},
-                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                    HTTPStatus.NOT_FOUND,
                 )
 
             del FlaskExercise.STORE[name]
