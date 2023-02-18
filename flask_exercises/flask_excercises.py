@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+from http import HTTPStatus
 
 
 class FlaskExercise:
@@ -26,6 +27,66 @@ class FlaskExercise:
     В ответ должен вернуться статус 204
     """
 
+    STORE = {}
+
     @staticmethod
     def configure_routes(app: Flask) -> None:
-        pass
+        @app.post('/user')
+        def create_user():
+            name = request.json.get('name')
+
+            if name is None:
+                return (
+                    {'errors': {'name': 'This field is required'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            FlaskExercise.STORE[name] = {}
+            return {'data': f'User {name} is created!'}, HTTPStatus.CREATED
+
+        @app.get('/user/<name>')
+        def get_user(name):
+            user = FlaskExercise.STORE.get(name)
+
+            if user is None:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.NOT_FOUND,
+                )
+
+            return {'data': f'My name is {name}'}, HTTPStatus.OK
+
+        @app.patch('/user/<name>')
+        def update_user_name(name):
+            user = FlaskExercise.STORE.get(name)
+
+            if user is None:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.NOT_FOUND,
+                )
+
+            new_name = request.json.get('name')
+
+            if new_name is None:
+                return (
+                    {'errors': {'new_name': 'This field is required'}},
+                    HTTPStatus.UNPROCESSABLE_ENTITY,
+                )
+
+            FlaskExercise.STORE[new_name] = user
+            del FlaskExercise.STORE[name]
+
+            return {'data': f'My name is {new_name}'}, HTTPStatus.OK
+
+        @app.delete('/user/<name>')
+        def delete_user(name):
+            if name not in FlaskExercise.STORE:
+                return (
+                    {'errors': {'name': 'User with this name does not exist'}},
+                    HTTPStatus.NOT_FOUND,
+                )
+
+            del FlaskExercise.STORE[name]
+
+            return '', HTTPStatus.NO_CONTENT
