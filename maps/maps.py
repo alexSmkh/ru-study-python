@@ -17,7 +17,7 @@ class MapExercise:
 
         filtered_movies = filter(
             lambda movie: (
-                len(movie['country'].split(',')) >= 2
+                movie['country'].count(',') >= 1
                 and movie['rating_kinopoisk']
                 and float(movie['rating_kinopoisk']) > 0
             ),
